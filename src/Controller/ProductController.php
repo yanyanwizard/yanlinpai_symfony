@@ -233,10 +233,12 @@ final class ProductController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
-            return new JsonResponse([
-                'status' => 'success',
-                'message' => 'Product added successfully!',
-            ]);
+            // return new JsonResponse([
+            //     'status' => 'success',
+            //     'message' => 'Product added successfully!',
+            // ]);
+
+            return $this->redirectToRoute('product_index');
         }
 
         return $this->render('product/new.html.twig', [

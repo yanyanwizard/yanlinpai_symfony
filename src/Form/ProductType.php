@@ -59,7 +59,7 @@ class ProductType extends AbstractType
                         'label' => 'Quantity',
                         'constraints' => [
                             new NotBlank(['message' => 'Price cannot be empty']),
-                            new Type('integer', 'The value must be an integer'),
+                            
                             new Range([
                                 'min' => 1,  
                             ]),
