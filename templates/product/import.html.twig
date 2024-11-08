@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Import Products{% endblock %}
+
+{% block body %}
+    <h1>Import Products from CSV</h1>
+
+    {{ form_start(form) }}
+        {{ form_row(form.csvFile) }}
+        <button class="btn btn-primary">Import</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('product_index') }}">Back to product list</a>
+{% endblock %}

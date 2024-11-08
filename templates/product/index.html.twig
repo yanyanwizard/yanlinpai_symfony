@@ -1,0 +1,196 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Product index{% endblock %}
+
+{% block body %}
+
+ 
+
+ <h1>Product List</h1>
+   
+
+<button type="button" class="btn btn-primary add_new_data" data-bs-toggle="modal" data-bs-target="#AddProductModal">
+    Add New Product
+</button>
+ 
+    
+ <a href="{{ path('product_export') }}" class="btn btn-primary">Export Products to CSV</a>
+
+  <a href="{{ path('product_import') }}" class="btn btn-secondary">Import Products from CSV</a>
+ 
+ <!-- Button to trigger modal -->
+ 
+
+   
+
+    <table id="productTable" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Stock Quantity</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- DataTables will fill this area dynamically -->
+        </tbody>
+    </table>
+
+
+  <!-- Modal Structure -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form will be loaded here via AJAX -->
+                </div>
+            </div>
+        </div>
+    </div>
+  
+
+   <!-- Modal Structure -->
+    <div class="modal fade" id="AddProductModal" tabindex="-1" role="dialog" aria-labelledby="AddProductModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AddProductModalLabel">Add Product</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form will be loaded here via AJAX -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+<!-- Modal structure -->
+
+<div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true"> 
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Add New Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span></button>
+                
+            </div>
+            <div class="modal-body" id="productModalBody">
+                <!-- Form will be loaded here via AJAX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script> 
+        $(document).ready(function() {
+            $('#productTable').DataTable({
+                "processing": true,
+                "serverSide": false,
+                "ajax": "{{ path('products_data') }}",
+                "columns": [
+                    { "data": "id" },
+                    { "data": "name" },
+                    { "data": "description" },
+                    { "data": "price" },
+                    { "data": "stock" },
+                    { "data": "created_at" },
+                    {  
+                        data: 'id', 
+                        "render": function (data, type, row) {
+                            return `
+                                <button class="btn btn-primary btn-sm edit-btn" data-url="${row.editUrl}">Edit</button>
+                                 <form method="post" action="${row.deleteUrl}" onsubmit="return confirm('Are you sure you want to delete this product?');">
+                                    <input type="hidden" name="_token" value="${row.csrfToken}">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            `;
+                        }
+                    }
+                ]
+            });
+
+            
+                    
+        $('#editProductModal').on('submit', 'form', function(event) {
+            event.preventDefault();
+            const form = $(this);
+
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                success: function() {
+                    $('#editProductModal').modal('hide');
+                    alert('Product updated successfully');
+                    location.reload(); // Reload page or update content dynamically
+                },
+                error: function() {
+                    alert('An error occurred while saving changes.');
+                }
+            });
+        });
+ 
+
+      $('#productTable').on('click', '.edit-btn', function() {
+                const url = $(this).data('url');
+                
+                // Load the form into the modal body
+                $.get(url, function(data) {
+                    $('#editProductModal .modal-body').html(data);
+                    $('#editProductModal').modal('show');
+                });
+       });
+
+ 
+
+
+           
+        $('.add_new_data').on('click', function() {
+                
+                const url = 'product/new';
+                
+                $.get(url, function(data) {
+                    $('#productModalBody.modal-body').html(data);
+                    $('#productModal').modal('show');
+                });
+
+                  
+       });
+        $('.btn-close').on('click', function() { 
+ 
+               
+                $("#productModal").fadeOut("normal", function() {
+                    $(this).remove();
+                });
+                $(".modal-backdrop").fadeOut("normal", function() {
+                    $(this).remove();
+                }); 
+                 
+       });
+         
+        
+         
+        
+            
+        });
+
+
+         
+ 
+    </script>
+
+    
+{% endblock %}
