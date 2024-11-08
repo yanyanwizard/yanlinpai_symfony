@@ -9,25 +9,37 @@
 
 {{ form_start(form, { 'action': path('product_edit', { 'id': product.id }) }) }}
  
-     <div class="mb-3">
+                    <div class="mb-3">
                         {{ form_label(form.name, 'Product Name') }}
                         {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.name) }}
+                         <div class="invalid-feedback">
+                            {{ form_errors(form.name) }}
+                        </div>
                     </div>
                     <div class="mb-3">
                         {{ form_label(form.description, 'Product Description') }}
                         {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.description) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.description) }}
+                        </div>
                     </div>
                     <div class="mb-3">
                         {{ form_label(form.price, 'Price') }}
                         {{ form_widget(form.price, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.price) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.price) }}
+                        </div>
                     </div>
                     <div class="mb-3">
                         {{ form_label(form.stockQuantity, 'Stock Quantity') }}
                         {{ form_widget(form.stockQuantity, {'attr': {'class': 'form-control'}}) }}
                         {{ form_errors(form.stockQuantity) }}
+                        <div class="invalid-feedback">
+                            {{ form_errors(form.stockQuantity) }}
+                        </div>
                     </div>
                     <div class="mb-3">
                         {{ form_label(form.createdAt, 'Created Date') }}

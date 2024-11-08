@@ -10,6 +10,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType; 
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Range;
+use Symfony\Component\Validator\Constraints\Type;
 class ProductType extends AbstractType
 {
     private ?\DateTimeImmutable $createdAt = null;
@@ -39,17 +42,31 @@ class ProductType extends AbstractType
                     ])
                     ->add('price', NumberType::class, [
                         'label' => 'Price',
-                        'scale' => 2,  // Optional: Number of decimal places
-                        'attr' => [
-                            'min' => 0, // Optional: Minimum value for the field
-                            'step' => 0.01, // Optional: Step value for decimals
+                        'constraints' => [
+                            new NotBlank(['message' => 'Price cannot be empty']),
+                            new Range([
+                                'min' => 0 
+                            ]),
                         ],
+                        
+                        'attr' => [
+                            'class' => 'form-control',
+                            'step' => 'any',  // Allows decimal numbers
+                            'placeholder' => 'Enter product price'
+                        ]
                     ])
                     ->add('stockQuantity', NumberType::class, [
-                        'label' => 'Stock Quantity',
+                        'label' => 'Quantity',
+                        'constraints' => [
+                            new NotBlank(['message' => 'Price cannot be empty']),
+                            new Type('integer', 'The value must be an integer'),
+                            new Range([
+                                'min' => 1,  
+                            ]),
+                        ],
                         'attr' => [
-                            'min' => 0, // Optional: Minimum stock quantity
-                            'step' => 1, // Optional: Integer step
+                            'class' => 'form-control',
+                            'placeholder' => 'Enter quantity (integer only)',
                         ],
                     ])
                     ->add('createdAt', DateTimeType::class, [
